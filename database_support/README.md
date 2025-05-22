@@ -1,21 +1,19 @@
 # Product Management Assistant
 
-A CLI-based assistant that helps manage products using natural language processing and a mock database system.
+A CLI-based product management assistant that uses PostgreSQL for data storage and OpenAI for natural language processing.
 
-## Features
+## Prerequisites
 
-- Natural language processing for product management
-- Support for adding, updating, and deleting products
-- Mock database using CSV files
-- Rich terminal interface
-- OpenAI GPT integration for intent classification and SQL query generation
+- Python 3.8+
+- PostgreSQL 12+
+- OpenAI API key
 
 ## Setup
 
-1. Create a virtual environment (recommended):
+1. Create a virtual environment:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 
 2. Install dependencies:
@@ -23,52 +21,68 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-3. Create a `.env` file in the project root with your OpenAI API key:
+3. Set up PostgreSQL:
+   - Create a new database
+   - Note down the database credentials
+
+4. Configure environment variables:
+   Create a `.env` file in the root directory with:
+   ```
+   DATABASE_URL=postgresql://username:password@localhost:5432/database_name
+   OPENAI_API_KEY=your_openai_api_key
+   ```
+
+5. Initialize the database:
+```bash
+python scripts/init_db.py
 ```
-OPENAI_API_KEY=your_api_key_here
+
+6. Run database migrations:
+```bash
+alembic upgrade head
 ```
 
 ## Usage
 
-1. Run the program:
+Run the assistant:
 ```bash
-python product_assistant.py
+python sql_product_assistant.py
 ```
 
-2. Interact with the assistant using natural language. For example:
-- "I want to add a new product"
-- "Delete product with ID 1"
-- "Update the price of product 2"
+The assistant supports the following operations:
+- Add new products
+- Update existing products
+- Delete products
+- View product details
 
-3. Follow the prompts to provide the required information for each action.
+## Development
 
-4. Type 'exit' to quit the program.
+### Database Migrations
 
-## Data Structure
+To create a new migration:
+```bash
+alembic revision --autogenerate -m "description"
+```
 
-The program uses two CSV files in the `mock_db` directory:
+To apply migrations:
+```bash
+alembic upgrade head
+```
 
-### products.csv
-- id (Integer, Primary Key)
-- name (String, Not Null)
-- description (String, Not Null)
-- price (Float, Not Null)
-- stock (Integer, Not Null, Default: 0)
-- category (String, Not Null)
-- created_at (DateTime, Not Null)
-- updated_at (DateTime, Not Null)
+To rollback migrations:
+```bash
+alembic downgrade -1  # Roll back one migration
+```
 
-### users.csv
-- id (Integer, Primary Key)
-- email (String, Unique, Not Null)
-- full_name (String, Not Null)
-- hashed_password (String, Not Null)
-- is_active (Boolean, Default: True)
-- created_at (DateTime, Not Null)
-- updated_at (DateTime, Not Null)
+## Project Structure
 
-## Requirements
-
-- Python 3.8+
-- OpenAI API key
-- Required Python packages (see requirements.txt) 
+```
+database_support/
+├── models/              # Database models
+├── database/           # Database configuration
+├── repositories/       # Database operations
+├── utils/             # Utility functions
+├── migrations/        # Database migrations
+├── scripts/           # Utility scripts
+└── sql_product_assistant.py  # Main application
+``` 

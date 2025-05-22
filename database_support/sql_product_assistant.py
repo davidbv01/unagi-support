@@ -1,12 +1,8 @@
 import os
-from datetime import datetime
 from typing import Optional
 from rich.console import Console
 from rich.prompt import Prompt
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 from database.config import get_db, init_db
 from repositories.product_repository import ProductRepository
 from utils.llm_utils import classify_intent, prepare_sql_data, get_required_fields
@@ -16,39 +12,6 @@ console = Console()
 
 # Load environment variables
 load_dotenv()
-
-# Database setup
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise ValueError("DATABASE_URL environment variable is not set")
-
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
-
-class Product(Base):
-    __tablename__ = "products"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(255), nullable=False)
-    description = Column(Text)
-    price = Column(Float, nullable=False)
-    stock = Column(Integer, nullable=False)
-    category = Column(String(100))
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-def init_db():
-    """Initialize the database by creating all tables."""
-    Base.metadata.create_all(bind=engine)
-
-def get_db():
-    """Get database session."""
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 def collect_field_data(field: str) -> str:
     """Collect data for a specific field from the user."""
