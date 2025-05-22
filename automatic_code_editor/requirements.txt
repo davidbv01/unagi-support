@@ -1,0 +1,4 @@
+# This file will list the Python packages required by the project.
+# For now, it's empty as we are using built-in modules.
+# Example (when we add PostgreSQL):
+# psycopg2-binary 
