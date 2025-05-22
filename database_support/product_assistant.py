@@ -54,7 +54,7 @@ def classify_intent(user_input: str) -> str:
     Respond with ONLY the category name, nothing else."""
 
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4.1-nano",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.1
     )
@@ -84,7 +84,7 @@ def generate_sql_query(action: str, data: Dict[str, str]) -> str:
     Respond with ONLY the SQL query, nothing else."""
 
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4.1-nano",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.1
     )
